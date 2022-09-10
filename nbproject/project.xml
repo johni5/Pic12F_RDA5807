@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>PicRDA_5807</name>
+            <name>Pic12F_RDA5807</name>
             <creation-uuid>387d3866-c262-4215-ad5a-e9d08f852ed8</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
