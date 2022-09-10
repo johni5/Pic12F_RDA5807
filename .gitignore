@@ -2,3 +2,5 @@
 /debug
 /dist
 /nbproject/private
+/nbproject/*.mk
+/nbproject/*.properties
