@@ -52,7 +52,6 @@
 #define SH_REG0E 4 // Shadow array position for register 0x0E - RDS Block C
 #define SH_REG0F 5 // Shadow array position for register 0x0F - RDS Block D
 
-
 /**
  * @defgroup GA01 Union, Structure and Defined Data Types
  * @brief   rda Defined Data Types
@@ -65,32 +64,31 @@
 typedef union {
 
     struct {
-        uint8_t BIT_0 : 1; 
-        uint8_t BIT_1 : 1; 
-        uint8_t BIT_2 : 1; 
-        uint8_t BIT_3 : 1; 
-        uint8_t BIT_4 : 1; 
-        uint8_t BIT_5 : 1; 
-        uint8_t BIT_6 : 1; 
-        uint8_t BIT_7 : 1; 
-        uint8_t BIT_8 : 1; 
-        uint8_t BIT_9 : 1; 
-        uint8_t BIT_A : 1; 
-        uint8_t BIT_B : 1; 
-        uint8_t BIT_C : 1; 
-        uint8_t BIT_D : 1; 
-        uint8_t BIT_E : 1; 
-        uint8_t BIT_F : 1; 
+        uint8_t BIT_0 : 1;
+        uint8_t BIT_1 : 1;
+        uint8_t BIT_2 : 1;
+        uint8_t BIT_3 : 1;
+        uint8_t BIT_4 : 1;
+        uint8_t BIT_5 : 1;
+        uint8_t BIT_6 : 1;
+        uint8_t BIT_7 : 1;
+        uint8_t BIT_8 : 1;
+        uint8_t BIT_9 : 1;
+        uint8_t BIT_A : 1;
+        uint8_t BIT_B : 1;
+        uint8_t BIT_C : 1;
+        uint8_t BIT_D : 1;
+        uint8_t BIT_E : 1;
+        uint8_t BIT_F : 1;
     } refined16;
-    
+
     struct {
         uint8_t LOW_BYTE;
         uint8_t HIGH_BYTE;
     } refined8;
-    
+
     uint16_t raw;
 } reg16;
-
 
 /**
  * @ingroup GA01
@@ -160,6 +158,7 @@ typedef union {
         uint8_t DMUTE : 1; //!< Mute Disable; 0 = Mute; 1 = Normal operation
         uint8_t DHIZ : 1; //!< Audio Output High-Z Disable; 0 = High impedance; 1 = Normal operation
     } ref16;
+
     struct {
         uint8_t lowByte;
         uint8_t highByte;
@@ -214,6 +213,7 @@ typedef union {
         uint8_t CHAN_H : 2; //!< Channel Select.
         uint8_t CHAN_L : 8; //!< Channel Select.
     } ref16;
+
     struct {
         uint8_t lowByte;
         uint8_t highByte;
@@ -245,6 +245,7 @@ typedef union {
         uint8_t STCIEN : 1; //!< Seek/Tune Complete Interrupt Enable; 0 = Disable Interrupt; 1 = Enable Interrupt;
         uint8_t RSVD2 : 1;
     } ref16;
+
     struct {
         uint8_t lowByte;
         uint8_t highByte;
@@ -267,6 +268,7 @@ typedef union {
         uint8_t SEEK_MODE : 2; //!< Default value is 00; When = 10, will add the RSSI seek mode
         uint8_t INT_MODE : 1; //!< If 0, generate 5ms interrupt; If 1, interrupt last until read reg0CH action occurs.
     } ref16;
+
     struct {
         uint8_t lowByte;
         uint8_t highByte;
@@ -364,14 +366,21 @@ typedef union {
 typedef union {
 
     struct {
-        uint16_t READCHAN : 10; //!< See Channel table . See table above
-        uint16_t ST : 1; //!< Stereo Indicator; 0 = Mono; 1 = Stereo
-        uint16_t BLK_E : 1; //!< When RDS enable: 1 = Block E has been found; 0 = no Block E has been found
-        uint16_t RDSS : 1; //!< RDS Synchronization; 0 = RDS decoder not synchronized(default); 1 = RDS decoder synchronized; Available only in RDS Verbose mode
-        uint16_t SF : 1; //!< Seek Fail. 0 = Seek successful; 1 = Seek failure;
-        uint16_t STC : 1; //!< Seek/Tune Complete. 0 = Not complete; 1 = Complete;
-        uint16_t RDSR : 1; //!< RDS ready; 0 = No RDS/RBDS group ready(default); 1 = New RDS/RBDS group ready.
-    } refined;
+        uint8_t READCHAN_L : 8; //!< See Channel table . See table above
+        uint8_t READCHAN_H : 2; //!< See Channel table . See table above
+        uint8_t ST : 1; //!< Stereo Indicator; 0 = Mono; 1 = Stereo
+        uint8_t BLK_E : 1; //!< When RDS enable: 1 = Block E has been found; 0 = no Block E has been found
+        uint8_t RDSS : 1; //!< RDS Synchronization; 0 = RDS decoder not synchronized(default); 1 = RDS decoder synchronized; Available only in RDS Verbose mode
+        uint8_t SF : 1; //!< Seek Fail. 0 = Seek successful; 1 = Seek failure;
+        uint8_t STC : 1; //!< Seek/Tune Complete. 0 = Not complete; 1 = Complete;
+        uint8_t RDSR : 1; //!< RDS ready; 0 = No RDS/RBDS group ready(default); 1 = New RDS/RBDS group ready.
+    } ref16;
+
+    struct {
+        uint8_t lowByte;
+        uint8_t highByte;
+    } ref8;
+
     uint16_t raw;
 } rda_reg0a;
 
@@ -401,7 +410,13 @@ typedef union {
         uint8_t FM_READY : 1; //!< 1=ready; 0=not ready.
         uint8_t FM_TRUE : 1; //!< 1 = the current channel is a station; 0 = the current channel is not a station.
         uint8_t RSSI : 7; //!< RSSI; 000000 = min; 111111 = max; RSSI scale is logarithmic.
-    } refined;
+    } ref16;
+
+    struct {
+        uint8_t lowByte;
+        uint8_t highByte;
+    } ref8;
+
     uint16_t raw;
 } rda_reg0b;
 
@@ -479,6 +494,7 @@ typedef union {
 } word16_to_bytes;
 
 uint16_t memoryReg[4];
+uint16_t statusReg[1];
 uint8_t currentVolume = 0;
 
 rda_reg02 *reg02 = (rda_reg02 *) & memoryReg[0]; // REG02;
@@ -486,17 +502,16 @@ rda_reg03 *reg03 = (rda_reg03 *) & memoryReg[1]; // REG03;
 rda_reg04 *reg04 = (rda_reg04 *) & memoryReg[2]; // REG04;
 rda_reg05 *reg05 = (rda_reg05 *) & memoryReg[3]; // REG05;
 
-//word16_to_bytes RDA_GetRegisterRawResult;
+rda_reg0a *reg0a = (rda_reg0a *) & statusReg[0]; // REG0A;
 
 void RDA_PowerDown();
 void RDA_SeekUp();
+void RDA_Seek(uint8_t mode);
 void RDA_addVolume(char step);
 
-//void RDA_SetRegister(uint8_t reg, uint8_t highByte, uint8_t lowByte);
-//void RDA_GetRegister(uint8_t reg, uint8_t *val);
-//void RDA_GetRegisterRaw(uint8_t reg);
-//void RDA_SetRegisters(uint8_t *addr);
+
 void RDA_ReadRegister3(void);
 void RDA_WriteRegister(uint8_t reg);
+void RDA_ReadStatusRegister();
 
 #endif

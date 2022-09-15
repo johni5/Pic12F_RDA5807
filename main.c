@@ -19,16 +19,13 @@ __EEPROM_DATA(
 
 /* Pin configuration
  * 
- * GP0 = LED 2
- * GP1 = LED 1
- * GP2 = Button 1
- * GP3 = Button 2
- * GP4 = SDA pin for i2c
- * GP5 = SCK pin for i2c
+ * GP0 = Button 1
+ * GP1 = Button 2
+ * GP2 = LED 1
+ * GP3 = 
+ * GP4 = SCK
+ * GP5 = SDA
  */
-
-#define PWR_ON GP1 = 1
-#define PWR_OFF GP1 = 0
 
 void InitCCT(void) {
 #ifdef _12F675
@@ -53,23 +50,19 @@ void InitButtons(void) {
     TMR0 = 0; // reset timer
     PEIE = 0;
     INTE = 0;
-    button1.GP2 = 1;
-    button2.GP5 = 1;
-    TRISIO = 0b00100100;
-    WPU = 0b00100100;
+    button1.GP0 = 1;
+    button2.GP1 = 1;
+    TRISIO = 0b00000011;
+    WPU = 0b00000011;
     nGPPU = 0;
-    IOCB2 = 1;
     GPIO = 0x00; // Make all pins 0
 }
 
 void interrupt globalInterrupt() {
     if (T0IF) {
         buttonsTick();
+        main_ticker++;
         T0IF = 0;
-    }
-    if (GPIF) {
-        GPIE = 0;
-        GPIF = 0;
     }
 }
 
@@ -77,82 +70,54 @@ void init(void) {
     InitCCT(); // Turn off ADC and comparator to make pins digital IOs
     InitI2C(); // Initialize i2c pins	
     InitButtons();
-}
-
-void stopRadio() {
-    RDA_ReadRegister3();
-    EEPROM_WriteRegisters(&memoryReg[0]);
-    RDA_PowerDown();
-    PWR_OFF;
-}
-
-void startRadio() {
+    // Start radio
     EEPROM_ReadRegisters(&memoryReg[0]);
-
     RDA_WriteRegister(REG02);
     RDA_WriteRegister(REG04);
     RDA_WriteRegister(REG05);
     currentVolume = reg05 -> ref16.VOLUME;
-
     reg03 -> ref16.TUNE = 1;
     RDA_WriteRegister(REG03);
 }
 
-void goSleep(void) {
-go_sleep:
-    GPIO = 0;
-    GPIE = 1;
-    GPIF = 0;
-    SLEEP();
-    // zzz...
-    init();
-    // Long click to wakeup
-    checkButton(&button1);
-    while (bPress(&button1)) {
-        checkButton(&button1);
-        if (bHold(&button1))PWR_ON;
-    }
-    if (!bLongClick(&button1)) goto go_sleep;
-    //----------------------
+void setNeedSave() {
+    needSave = 1;
+    main_ticker = 0;
 }
-
-
-// Main function
 
 void main() {
     init();
-    goSleep();
-
-    // zzz...
-
-    startRadio();
+    PWR_ON;
     while (1) {
         checkButton(&button1);
         checkButton(&button2);
 
         if (bClick(&button2)) {
-            RDA_addVolume(1);
+            RDA_addVolume(VOUME_UP);
+            setNeedSave();
         }
 
         if (bClick(&button1)) {
-            RDA_addVolume(-1);
+            RDA_addVolume(VOUME_DOWN);
+            setNeedSave();
         }
 
         if (bHold(&button2)) {
-            RDA_SeekUp();
-            while (bPress(&button2))
-                checkButton(&button2);
+            RDA_Seek(RDA_SEEK_UP);
+            setNeedSave();
         }
 
         if (bHold(&button1)) {
-            stopRadio();
-            while (bPress(&button1))
-                checkButton(&button1);
-            PWR_ON;
-            goSleep();
-            // zzz...
-            startRadio();
+            RDA_Seek(RDA_SEEK_DOWN);
+            setNeedSave();
         }
+
+        if (needSave && main_ticker > SAVE_TIMEOUT) {
+            RDA_ReadRegister3();
+            EEPROM_WriteRegisters(&memoryReg[0]);
+            needSave = 0;
+        }
+
     }
 }
 

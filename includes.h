@@ -14,4 +14,16 @@
 #include "radio.h"
 #include "buttons.h"
 
+#define LED_PIN GP2
+#define SAVE_TIMEOUT 5000
+
+#define PWR_ON LED_PIN = 1
+#define PWR_OFF LED_PIN = 0
+#define VOUME_UP 1
+#define VOUME_DOWN -1
+
+bit needSave;
+volatile unsigned int main_ticker = 0;
+
+
 #endif

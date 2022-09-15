@@ -2,10 +2,10 @@
 #define __I2C_H
 
 // Define i2c pins
-#define SDA			GP4				// Data pin for i2c
-#define SCK			GP0				// Clock pin for i2c
-#define SDA_DIR		TRISIO4			// Data pin direction
-#define SCK_DIR		TRISIO0			// Clock pin direction
+#define SDA			GP5				// Data pin for i2c
+#define SCK			GP4				// Clock pin for i2c
+#define SDA_DIR		TRISIO5			// Data pin direction
+#define SCK_DIR		TRISIO4			// Clock pin direction
 
 
 #define DataPinADCMask      ANS3

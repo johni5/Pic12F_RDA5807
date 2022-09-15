@@ -3,15 +3,6 @@
 #ifndef __BUTTONS_H
 #define __BUTTONS_H
 
-
-#define BUTTON_1 GP2
-#define BUTTON_2 GP3
-
-#define B1_ON !BUTTON_1
-#define B1_OFF BUTTON_1
-#define B2_ON !BUTTON_2
-#define B2_OFF BUTTON_2
-
 #define BTN_ON(msk) !(GPIO & msk)
 #define BTN_OFF(msk) GPIO & msk
 
